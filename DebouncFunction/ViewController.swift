@@ -13,6 +13,7 @@ class ViewController: UIViewController {
     @IBOutlet var debouncedSwitches: [DebouncedSwitch]!
     
     private var spinner: UIActivityIndicatorView?
+    private var onOffCount = 0
     var debouncedFunction: (()->())?
     
     func debounce(delay: Int, queue: DispatchQueue, action: @escaping (() -> ())) -> ()->() {
@@ -81,18 +82,24 @@ class ViewController: UIViewController {
         debouncedFunction?()
     }
     @IBAction func onOff(_ sender: DebouncedSwitch) {
-        self.spinner!.startAnimating()
+        if self.onOffCount == 0 {
+            self.spinner!.startAnimating()
+        }
+        self.onOffCount += 1
 //        for s in debouncedSwitches {
 //            s.isEnabled = false
 //        }
         sender.isEnabled = false
-        let dispatchTime = DispatchTime.now() + DispatchTimeInterval.milliseconds(5000)
-        DispatchQueue.global(qos: .default).asyncAfter(deadline: dispatchTime, execute: {
+        let dispatchTime = DispatchTime.now() + DispatchTimeInterval.milliseconds(1000)
+        DispatchQueue.main.asyncAfter(deadline: dispatchTime, execute: {
 //            for s in self.debouncedSwitches {
 //                s.isEnabled = true
 //            }
             sender.isEnabled = true
-            self.spinner!.stopAnimating()
+            self.onOffCount -= 1
+            if self.onOffCount == 0 {
+                self.spinner!.stopAnimating()
+            }
         })
         print("Switch(\(sender)) is pressed.")
     }
