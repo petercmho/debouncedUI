@@ -47,10 +47,11 @@ class ViewController: UIViewController {
 //            s.debouncedOnOffHandler =
         }
         
-        if let activityView = UIActivityIndicatorView(activityIndicatorStyle: .gray) {
-            self.view.addSubview(self.spinner!)
-            self.spinner.center = GCPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2)
-        }
+        self.spinner = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+        self.view.addSubview(self.spinner!)
+        self.spinner!.center = CGPoint(x: self.view.frame.size.width / 2, y: self.view.frame.size.height / 2)
+        self.spinner!.color = UIColor.blue
+        self.spinner!.hidesWhenStopped = true
     }
 
     override func didReceiveMemoryWarning() {
@@ -80,14 +81,18 @@ class ViewController: UIViewController {
         debouncedFunction?()
     }
     @IBAction func onOff(_ sender: DebouncedSwitch) {
-        for s in debouncedSwitches {
-            s.isEnabled = false
-        }
+        self.spinner!.startAnimating()
+//        for s in debouncedSwitches {
+//            s.isEnabled = false
+//        }
+        sender.isEnabled = false
         let dispatchTime = DispatchTime.now() + DispatchTimeInterval.milliseconds(5000)
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: dispatchTime, execute: {
-            for s in self.debouncedSwitches {
-                s.isEnabled = true
-            }
+        DispatchQueue.global(qos: .default).asyncAfter(deadline: dispatchTime, execute: {
+//            for s in self.debouncedSwitches {
+//                s.isEnabled = true
+//            }
+            sender.isEnabled = true
+            self.spinner!.stopAnimating()
         })
         print("Switch(\(sender)) is pressed.")
     }
