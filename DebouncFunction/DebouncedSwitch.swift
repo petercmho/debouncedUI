@@ -10,6 +10,13 @@ import UIKit
 
 class DebouncedSwitch: UISwitch {
 
+    var lastFireTime: DispatchTime?
+    
+    var debouncedOnOffHandler: (()->())?
+    
+    func debouncedAction() {
+        self.isEnabled = true
+    }
     /*
     // Only override draw() if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.

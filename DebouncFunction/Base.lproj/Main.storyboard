@@ -66,6 +66,10 @@
                             <constraint firstItem="tBb-3W-ugI" firstAttribute="top" secondItem="igE-UY-CqV" secondAttribute="bottom" constant="35" id="YPv-8C-0QY"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outletCollection property="debouncedSwitches" destination="UjX-AP-jXX" collectionClass="NSMutableArray" id="Iuh-qg-RJE"/>
+                        <outletCollection property="debouncedSwitches" destination="U7A-Q6-9Tp" collectionClass="NSMutableArray" id="a1x-0W-TTM"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

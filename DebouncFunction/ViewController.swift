@@ -10,6 +10,9 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    @IBOutlet var debouncedSwitches: [DebouncedSwitch]!
+    
+    private var spinner: UIActivityIndicatorView?
     var debouncedFunction: (()->())?
     
     func debounce(delay: Int, queue: DispatchQueue, action: @escaping (() -> ())) -> ()->() {
@@ -38,7 +41,16 @@ class ViewController: UIViewController {
         debouncedFunction = debounce(delay: 5000, queue: DispatchQueue.main, action: {
             print("repeat \(Date().timeIntervalSinceReferenceDate)")
         })
-
+        
+        for s in debouncedSwitches {
+            s.addTarget(self, action: #selector(onOff), for: .touchUpInside)
+//            s.debouncedOnOffHandler =
+        }
+        
+        if let activityView = UIActivityIndicatorView(activityIndicatorStyle: .gray) {
+            self.view.addSubview(self.spinner!)
+            self.spinner.center = GCPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2)
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -66,6 +78,18 @@ class ViewController: UIViewController {
     
     @IBAction func startManually(_ sender: Any) {
         debouncedFunction?()
+    }
+    @IBAction func onOff(_ sender: DebouncedSwitch) {
+        for s in debouncedSwitches {
+            s.isEnabled = false
+        }
+        let dispatchTime = DispatchTime.now() + DispatchTimeInterval.milliseconds(5000)
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: dispatchTime, execute: {
+            for s in self.debouncedSwitches {
+                s.isEnabled = true
+            }
+        })
+        print("Switch(\(sender)) is pressed.")
     }
 }
 
